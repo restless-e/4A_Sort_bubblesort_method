@@ -11,105 +11,120 @@ correct size and copy all inputs into it. Be sure to delete any intermediate arr
 #include "stdafx.h"
 #include <iostream>
 #include <string>
+#include <cctype>
 
 using namespace std;
 
-int *read_data(int &size);
-
-int *grow(int a[], int &size);
-
-void prntArr(int ar[], int size);
+double *read_data(int &size);
+double *grow(double a[], int &size);
+double *addA(double a[], int &size);
+void prntArr(double ar[], int size);
 
 int main()
 {
-	int size = 3;
+	int size = 3; // starting at 3 for more frequent doubling for testing.
 	int iter = 0;
-	int *a;
+	double *a;
 
+	cout << "Add numbers to array, q to exit: " << endl;
 	a = read_data(size);
 
+	cout << "First array input: " << endl;
 	prntArr(a, size);
+
+	a = addA(a, size);
+
+	cout << "Finally, all values added into array: " << endl;
+	prntArr(a, size);
+
+	delete[] a;
+
 	system("pause");
 	return 0;
 }
 
-int *read_data(int &size)
+double *read_data(int &size)
 {
-	int input;
-	int *dArr = new int[size];
+	string input;
+	double *dArr = new double[size];
 	int iter = 0;
 
 	// A bunch of magic happens
 	do {
 		cin >> input;
-		if (cin.good()) {
-			dArr[iter] = input;
+		if (input != "q") {
+			dArr[iter] = stod(input);
 			iter++;
 			if (iter == size) {
-				int *temp = NULL;
-				temp = grow(dArr, size);
-				//delete[] dArr; // not really sure why these deletes are causign issues.
-				dArr = temp;
-				//delete[] temp;
+				dArr = grow(dArr, size);
 			}
 		}
-	} while (cin.good());
+	} while (input != "q");
+	input = "";
 	size = size - (size - iter);
+
 	return dArr;
 }
 
-int *grow(int a[], int &size)
+double *grow(double a[], int &size)
 {
 	cout << "Growing array" << endl;
-	int *g = new int[size * 2];
-	for (int i = 0; i < size; i++){
+
+	double *g = new double[size * 2];
+
+	for (int i = 0; i < size; i++) {
 		g[i] = a[i];
 	}
-	for (int k = size; k < size * 2; k++){
+
+	for (int k = size; k < size * 2; k++) {
 		g[k] = 0;
 	}
-	//delete[] a;
+
+	delete[] a;
 	a = g;
 	size = size * 2;
 	cout << "New temp size is " << size << endl;
 	return g;
 }
 
-void prntArr(int ar[], int size)
+double *addA(double a[], int &size)
 {
-	for (int i = 0; i < size; i++){
+	cout << "Input integers to add to array, q to exit: " << endl;
+	string input;
+	int iter = 0;
+	iter = size;
+
+	double *addArr = new double[size * 2];
+	for (int i = 0; i < size; i++) {
+		addArr[i] = a[i];
+	}
+	for (int k = size; k < size * 2; k++) {
+		addArr[k] = 0;
+	}
+	a = addArr;
+	size = size * 2;
+
+	do {
+		cin >> input;
+		if (input != "q") {
+			// for debug //cout << "Add input is: " << input << endl;
+			addArr[iter] = stod(input);
+			iter++;
+			if (iter == size) {
+				addArr = grow(addArr, size);
+			}
+		}
+	} while (input != "q");
+
+	input = "";
+	size = size - (size - iter);
+	return addArr;
+}
+
+void prntArr(double ar[], int size)
+{
+	for (int i = 0; i < size; i++) {
 		cout << ar[i] << " ";
 	}
 	cout << endl;
 }
-//do {
-//	cin >> input;
-//	if (cin.good()) {
-//		*dArr = input;
-//		dArr++;
-//		/*
-//		cout << "dArr = " << dArr << endl
-//			<< "*dArr = " << *dArr << endl
-//			<< "dArr[iter] = " << dArr[iter] << endl
-//			<< "dArr[size] = " << dArr[size] << endl;
-//		*/
-//		if (dArr == dArr + size) {
-//			cout << "Growing array" << endl;
-//			int *grow = new int[2 * size];
-//			for (int i = 0; i < size; i++) {
-//				grow[i] = dArr[i];
-//			}
-//			delete[] dArr;
-//			dArr = grow;
-//			size = size * 2;
-//			cout << "New temp size is " << size << endl;
-//		}
-//	}
-//} while (cin.good());
-//int *temp = new int[iter + 1];
-//for (int i = 0; i < iter + 1; i++) {
-//	temp[i] = dArr[i];
-//}
-//delete[] dArr;
-//dArr = temp;
-//size = iter;
